@@ -32,6 +32,8 @@ for i in range(t):
     weights[choice] = weights[choice] * math.exp(estimated_reward * gamma / len(rewards))
 ```
 
+To run the project open a terminal or shell and execute the command ```python3 stonks.py``` on the root folder.
+
 ## **Result Analysis**
 
 To better understand our results and tell whether or not the algorithm would make good decisions we start by showing the cumulative rewards of each company for which we have the option to invest in.
