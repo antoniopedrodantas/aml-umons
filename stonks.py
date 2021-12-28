@@ -39,7 +39,7 @@ plt.plot(amzn_cum, label='amzn')
 
 # decide what gamma is
 # in this case we will set it to 0.3
-gamma = 0.2
+gamma = 0.25
 
 # we initialize the weights for each hand of the bandit
 weights = [1, 1, 1, 1, 1, 1]
@@ -52,10 +52,11 @@ regret = []
 theoretical_regret = []
 
 cumulative_reward = []
-best_action_cumulative_reward = []
 
 t = 1000
 k = len(rewards)
+
+best_action_counter = 0
 
 # lets have them train for 500 moves
 for i in range(t):
@@ -73,24 +74,30 @@ for i in range(t):
     # gets best action reward
     best_action_reward = get_best_action_cumulative_reward(i, rewards)
 
+    # checks how many times it got the best action
+    if (best_action_reward == reward):
+        best_action_counter += 1
+
     # updates regret for every move
     if i == 0:
         regret.append(best_action_reward - reward)
         theoretical_regret.append((math.e - 1) * gamma * best_action_reward + (k * math.log(k)) / gamma)
         cumulative_reward.append(reward)
-        best_action_cumulative_reward.append(best_action_reward)
     else:
         regret.append((best_action_reward - reward) + regret[i - 1])
         theoretical_regret.append(((math.e - 1) * gamma * best_action_reward + (k * math.log(k)) / gamma) + theoretical_regret[i - 1])
         cumulative_reward.append(reward + cumulative_reward[i - 1])
-        best_action_cumulative_reward.append(best_action_reward + best_action_cumulative_reward[i - 1])
 
     if (i + 1) % 50 == 0:
         print("for iteration number", i + 1, "exp3 decided to invest in", options[choice])
 
 # compares final weights to figure out  which is the best company to invest in
 best_option = get_max(weights)
-print("The Exp3 algorithm says", options[best_option], "is the best company to invest in")
+print("\nThe Exp3 algorithm says", options[best_option], "is the best company to invest in.")
+
+# checks how many times it got the best action
+print("\nThe Exp3 algorithm got the best action", (best_action_counter/t) * 100, "% of the time.\n")
+
 
 # shows stock cumulative rewards on a plot
 plt.legend(loc=0)
